@@ -565,26 +565,39 @@ function beep() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     
-    // Nada Pertama (Rendah)
-    const o1 = ctx.createOscillator();
-    const g1 = ctx.createGain();
-    o1.connect(g1); g1.connect(ctx.destination);
-    o1.frequency.value = 523.25; // Nada C5
-    g1.gain.value = 0.1;
-    o1.start();
-    setTimeout(() => { o1.stop(); }, 100);
+    // Durasi bel sekolah berbunyi (2500 ms = 2.5 detik)
+    const duration = 2500; 
+    const now = ctx.currentTime;
     
-    // Nada Kedua (Tinggi - berbunyi setelah 100ms)
-    setTimeout(() => {
-      const o2 = ctx.createOscillator();
-      const g2 = ctx.createGain();
-      o2.connect(g2); g2.connect(ctx.destination);
-      o2.frequency.value = 659.25; // Nada E5
-      g2.gain.value = 0.1;
-      o2.start();
-      setTimeout(() => { o2.stop(); ctx.close(); }, 150);
-    }, 100);
-
+    // Bel sekolah terdengar tebal karena gabungan beberapa nada (Harmonik)
+    // Kita buat 3 osilator sekaligus dengan frekuensi khas bel industri/sekolah
+    const frequencies = [440, 660, 880]; 
+    
+    frequencies.forEach((freq) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      
+      // Menggunakan gelombang 'square' (kotak) untuk menghasilkan suara elektrik yang tebal dan agak jadul
+      o.type = 'square'; 
+      o.frequency.value = freq;
+      
+      // Mengatur volume masuk yang lantang
+      g.gain.setValueAtTime(0.2, now); 
+      
+      // Memberikan efek sedikit memudar di akhir bel agar tidak mati mendadak
+      g.gain.setValueAtTime(0.2, now + (duration / 1000) - 0.3);
+      g.gain.linearRampToValueAtTime(0.001, now + (duration / 1000));
+      
+      o.connect(g);
+      g.connect(ctx.destination);
+      
+      o.start(now);
+      o.stop(now + (duration / 1000));
+    });
+    
+    // Tutup audio context setelah bel benar-benar selesai
+    setTimeout(() => { ctx.close(); }, duration + 200);
+    
   } catch(e){}
 }
 function setRunningUI(isRunning){
