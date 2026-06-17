@@ -561,19 +561,32 @@ function updateDisplay(){
   }
 }
 
-function beep(){
+function beep() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.connect(g); g.connect(ctx.destination);
-    o.frequency.value = 880;
-    g.gain.value = 0.15;
-    o.start();
-    setTimeout(function(){ o.stop(); ctx.close(); }, 300);
+    
+    // Nada Pertama (Rendah)
+    const o1 = ctx.createOscillator();
+    const g1 = ctx.createGain();
+    o1.connect(g1); g1.connect(ctx.destination);
+    o1.frequency.value = 523.25; // Nada C5
+    g1.gain.value = 0.1;
+    o1.start();
+    setTimeout(() => { o1.stop(); }, 100);
+    
+    // Nada Kedua (Tinggi - berbunyi setelah 100ms)
+    setTimeout(() => {
+      const o2 = ctx.createOscillator();
+      const g2 = ctx.createGain();
+      o2.connect(g2); g2.connect(ctx.destination);
+      o2.frequency.value = 659.25; // Nada E5
+      g2.gain.value = 0.1;
+      o2.start();
+      setTimeout(() => { o2.stop(); ctx.close(); }, 150);
+    }, 100);
+
   } catch(e){}
 }
-
 function setRunningUI(isRunning){
 
 }
