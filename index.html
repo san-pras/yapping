@@ -537,7 +537,7 @@ function pickRandom(){
   document.getElementById('cat-badge').textContent = categories[t.cat].name;
   document.getElementById('cat-dot').style.background = categories[t.cat].color;
   sessionCount++;
-  document.getElementById('topic-count').textContent = "Topik no. " + String(sessionCount).padStart(3,'0') + " / " + topics.length;
+  //document.getElementById('topic-count').textContent = "Topik no. " + String(sessionCount).padStart(3,'0') + " / " + topics.length;
   resetTimer();
 }
 
