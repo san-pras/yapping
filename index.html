@@ -36,17 +36,12 @@ body{
 @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-3px);} }
 h1{
   font-family:'Anton',sans-serif;
-  font-size:clamp(22px,5.5vw,30px);
+  font-size:clamp(27px,5.5vw,8px);
+  font-weight:100;
   letter-spacing:1.5px;
   text-transform:uppercase;
   margin:0;
   color:var(--cream);
-}
-.subtitle{
-  text-align:center;
-  color:var(--smoke);
-  font-size:14px;
-  margin:0 0 36px;
 }
 .bulb-row{ display:flex; justify-content:space-between; padding:0 16px; position:relative; z-index:2; }
 .bulb-row.top{ margin-bottom:-6px; }
@@ -122,19 +117,21 @@ h1{
   align-items:center; gap:6px;
   justify-content:center;
   margin-bottom:12px;
-  font-family:'Anton',sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase;
+  font-family:'Anton',sans-serif; font-size:20px; letter-spacing:1px; text-transform:uppercase;
   color:var(--crimson);
 }
 .rec-badge.show{ display:inline-flex; }
+display: none !important;
 .rec-dot{ width:8px; height:8px; border-radius:50%; background:var(--crimson); animation:pulse 1s ease-in-out infinite; }
 @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.3;} }
 #timer-display{
-  font-family:'Space Mono',monospace;
+  font-family:'Anton',sans-serif;
   font-weight:700;
-  font-size:clamp(46px,12vw,60px);
+  font-size:clamp(200px,12vw,60px);
   color:var(--cream);
   margin:0 0 16px;
   transition:color .3s ease;
+  letter-spacing: 10px;
 }
 .progress-track{ height:6px; background:var(--curtain-light); border-radius:99px; overflow:hidden; margin-bottom:22px; }
 #timer-bar{ height:100%; width:100%; background:var(--amber); border-radius:99px; transition:width .2s linear, background .3s ease; }
@@ -169,9 +166,9 @@ button:focus-visible{ outline:2px solid var(--amber); outline-offset:2px; }
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--amber);">
       <path d="M12 19v3"/><path d="M8 22h8"/><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/>
     </svg>
-    <h1>Latihan Yapping</h1>
+    <h1>Latihan Yapping 1 MENIT TOPIK RANDOM</h1>
   </div>
-  <p class="subtitle">Acak topik, lalu ngomong di depan kamera selama satu menit</p>
+  <p class="subtitle"></p>
 
   <div class="stage">
     <div class="spotlight"></div>
@@ -194,15 +191,14 @@ button:focus-visible{ outline:2px solid var(--amber); outline-offset:2px; }
     Acak topik baru
   </button>
 
-  <div class="divider"><span>Waktu tampil</span></div>
+  <div class="divider"><span>WAKTU YAPPING</span></div>
 
   <div class="timer-section">
-    <div class="rec-badge" id="rec-badge"><span class="rec-dot"></span>Merekam</div>
     <div id="timer-display">01:00</div>
     <div class="progress-track"><div id="timer-bar"></div></div>
     <div class="btn-row">
       <button class="pill-btn" id="start-btn">
-        <svg width="15" height="15" viewBox="0 0 24 24" style="fill:var(--amber);"><polygon points="6,4 20,12 6,20"/></svg>
+        <svg width="15" height="=15" viewBox="0 0 24 24" style="fill:var(--amber);"><polygon points="6,4 20,12 6,20"/></svg>
         <span id="start-label">Mulai</span>
       </button>
       <button class="pill-btn" id="reset-btn">
@@ -575,8 +571,7 @@ function beep(){
 }
 
 function setRunningUI(isRunning){
-  const badge = document.getElementById('rec-badge');
-  if (isRunning) badge.classList.add('show'); else badge.classList.remove('show');
+
 }
 
 function tick(){
