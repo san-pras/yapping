@@ -8,6 +8,35 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
+
+.time-adjust-row {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: -6px 0 16px;
+}
+.adjust-btn {
+  background: var(--curtain-light);
+  border: 1px solid rgba(232, 162, 61, 0.2);
+  color: var(--smoke);
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.adjust-btn:hover {
+  background: var(--amber-dim);
+  color: var(--amber);
+  border-color: var(--amber);
+}
+.adjust-btn:active {
+  transform: scale(0.95);
+}
+
+  
 :root{
   --stage-black:#15110d;
   --curtain:#241b14;
@@ -124,7 +153,17 @@ h1{
 display: none !important;
 .rec-dot{ width:8px; height:8px; border-radius:50%; background:var(--crimson); animation:pulse 1s ease-in-out infinite; }
 @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.3;} }
-#timer-display{
+#timer-display
+<div id="timer-display">01:00</div>
+
+<div class="time-adjust-row">
+  <button class="adjust-btn" id="minus-15">-15s</button>
+  <button class="adjust-btn" id="plus-15">+15s</button>
+</div>
+
+<div class="progress-track"><div id="timer-bar"></div></div> 
+  
+  {
 font-family:'Anton',sans-serif;
   font-weight:700;
   /* 1. Memperbaiki clamp agar tidak membuat ghost-gap (Min: 60px, Maks: 100px) */
@@ -525,8 +564,9 @@ function buildBulbs(){
 let lastIndex = -1;
 let sessionCount = 0;
 let timerInterval = null;
-let timeLeft = 60;
+let timeLeft = maxTime;
 let running = false;
+let maxTime = 60;
 
 function pickRandom(){
   let idx;
@@ -549,8 +589,9 @@ function formatTime(s){
 
 function updateDisplay(){
   document.getElementById('timer-display').textContent = formatTime(timeLeft);
-  const pct = (timeLeft/60)*100;
+  const pct = maxTime > 0 ? (timeLeft / maxTime) * 100 : 0; 
   document.getElementById('timer-bar').style.width = pct + '%';
+  
   const display = document.getElementById('timer-display');
   if (timeLeft <= 10) {
     document.getElementById('timer-bar').style.background = 'var(--crimson)';
@@ -618,13 +659,13 @@ function tick(){
 }
 
 function startPause(){
-  if (running) {
+if (running) {
     clearInterval(timerInterval);
     running = false;
     setRunningUI(false);
     document.getElementById('start-label').textContent = 'Lanjut';
   } else {
-    if (timeLeft <= 0) timeLeft = 60;
+    if (timeLeft <= 0) timeLeft = maxTime; // Menggunakan maxTime saat ini
     running = true;
     setRunningUI(true);
     document.getElementById('start-label').textContent = 'Pause';
@@ -632,12 +673,30 @@ function startPause(){
   }
 }
 
+function adjustTime(amount) {
+  // Aturan logis: penambahan/pengurangan mengubah durasi target (maxTime) dan sisa waktu saat ini
+  let newMaxTime = maxTime + amount;
+  
+  // Batasi durasi minimal 15 detik, maksimal tidak terbatas (misal 99 menit untuk amannya)
+  if (newMaxTime < 15) newMaxTime = 15;
+  
+  // Hitung selisih untuk diterapkan pada waktu berjalan saat ini
+  const diff = newMaxTime - maxTime;
+  maxTime = newMaxTime;
+  timeLeft = Math.max(0, timeLeft + diff);
+  
+  updateDisplay();
+}
+
+document.getElementById('plus-15').addEventListener('click', () => adjustTime(15));
+document.getElementById('minus-15').addEventListener('click', () => adjustTime(-15));
+  
 function resetTimer(){
   clearInterval(timerInterval);
   timerInterval = null;
   running = false;
   setRunningUI(false);
-  timeLeft = 60;
+  timeLeft = maxTime; // Reset kembali ke maxTime yang sedang aktif
   updateDisplay();
   document.getElementById('start-label').textContent = 'Mulai';
 }
